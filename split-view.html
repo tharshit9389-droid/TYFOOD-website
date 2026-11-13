@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TYFOOD at HOME - 3-in-1 Real-Time Connected Hub</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: #0f172a;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      height: calc(100vh - 120px);
+      gap: 12px;
+      padding: 12px;
+    }
+    .panel-frame-wrapper {
+      background: #1e293b;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .panel-header-bar {
+      padding: 0.65rem 1rem;
+      background: #0b1120;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #f8fafc;
+    }
+    .quick-flow-bar {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 0.65rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .flow-steps {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .flow-btn {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s ease;
+    }
+    .flow-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    @media (max-width: 1100px) {
+      .split-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .panel-frame-wrapper {
+        height: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="ty-header" style="background: rgba(15, 23, 42, 0.96); border-bottom: 1px solid #334155; color: #fff;">
+    <div class="ty-header-inner">
+      <a href="index.html" class="brand-container" style="color: #fff;">
+        <div class="brand-logo-badge">🍲</div>
+        <div>
+          <div class="brand-title" style="color: #fff;">TYFOOD <span>at HOME</span></div>
+          <div class="brand-subtitle" style="color: #94a3b8;">Unified 3-in-1 Real-Time Connected Architecture</div>
+        </div>
+      </a>
+
+      <!-- Portal Tabs -->
+      <nav class="portal-switcher" style="background: #1e293b; border-color: #334155;">
+        <a href="index.html" class="portal-tab" style="color: #cbd5e1;">
+          <span>🍽️ Client Portal</span>
+        </a>
+        <a href="restaurant.html" class="portal-tab" style="color: #cbd5e1;">
+          <span>👨‍🍳 Restaurant Kitchen</span>
+        </a>
+        <a href="delivery.html" class="portal-tab" style="color: #cbd5e1;">
+          <span>🛵 Delivery Partner</span>
+        </a>
+        <a href="split-view.html" class="portal-tab active" style="background: #334155; color: #a78bfa;">
+          <span>⚡ 3-in-1 Live Hub</span>
+        </a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="resetDemoBtn" class="btn-secondary-sm" style="background: #334155; color: #fff; border-color: #475569;" onclick="resetAllHub()">
+          🔄 Reset Demo
+        </button>
+        <span class="live-pulse-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">
+          <span class="pulse-dot"></span> All 3 Connected
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Workflow Simulator Bar -->
+  <div class="quick-flow-bar">
+    <div style="font-size: 0.82rem; font-weight: 700; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem;">
+      <span>⚡ Quick Flow Triggers:</span>
+    </div>
+    <div class="flow-steps">
+      <button class="flow-btn" onclick="triggerClientOrder()">
+        1️⃣ Place Order as Client (₹855)
+      </button>
+      <button class="flow-btn" onclick="triggerRestaurantAccept()">
+        2️⃣ Kitchen Accept & Cook (20m)
+      </button>
+      <button class="flow-btn" onclick="triggerFoodReady()">
+        3️⃣ Mark Food Ready
+      </button>
+      <button class="flow-btn" onclick="triggerRiderPickup()">
+        4️⃣ Rider Pickup & Auto-Drive (₹10/km)
+      </button>
+      <button class="flow-btn" onclick="triggerDelivered()">
+        5️⃣ Mark Delivered & Payout
+      </button>
+    </div>
+    <div style="font-size: 0.78rem; color: #34d399; font-weight: 700;">
+      ✓ BroadcastChannel & LocalStorage Auto-Syncing
+    </div>
+  </div>
+
+  <!-- Live Login IDs Badge Bar -->
+  <div style="background: #0b1120; border-bottom: 1px solid #334155; padding: 0.5rem 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; gap: 1rem; flex-wrap: wrap;">
+    <div style="color: #94a3b8; font-weight: 700;">🔑 Active System Login IDs:</div>
+    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+      <div><span style="color: #94a3b8;">1. Client ID:</span> <b style="color: #ff7849;">client.tanmay@tyfood.com</b></div>
+      <div><span style="color: #94a3b8;">2. Restaurant ID:</span> <b style="color: #f59e0b;">chef.burgerloft@tyfood.com</b> (FSSAI Verified ✓)</div>
+      <div><span style="color: #94a3b8;">3. Delivery Partner ID:</span> <b style="color: #34d399;">rider.vikram@tyfood.com</b> (Rate: ₹10/km)</div>
+    </div>
+  </div>
+
+  <!-- 3-Way Split Layout -->
+  <div class="split-layout">
+
+    <!-- Panel 1: Client Portal -->
+    <div class="panel-frame-wrapper">
+      <div class="panel-header-bar">
+        <div class="panel-title" style="color: #ff7849;">
+          <span>🍽️ 1st Side: Client (Customer)</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-secondary-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem;" onclick="reloadFrame('frameClient')">⟳ Reload</button>
+          <a href="index.html" target="_blank" class="btn-secondary-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; text-decoration: none;">↗ Tab</a>
+        </div>
+      </div>
+      <iframe id="frameClient" class="panel-frame" src="index.html"></iframe>
+    </div>
+
+    <!-- Panel 2: Restaurant Kitchen Portal -->
+    <div class="panel-frame-wrapper">
+      <div class="panel-header-bar">
+        <div class="panel-title" style="color: #f59e0b;">
+          <span>👨‍🍳 2nd Side: Restaurant Kitchen</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-secondary-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem;" onclick="reloadFrame('frameRestaurant')">⟳ Reload</button>
+          <a href="restaurant.html" target="_blank" class="btn-secondary-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; text-decoration: none;">↗ Tab</a>
+        </div>
+      </div>
+      <iframe id="frameRestaurant" class="panel-frame" src="restaurant.html"></iframe>
+    </div>
+
+    <!-- Panel 3: Delivery Partner Fleet Portal -->
+    <div class="panel-frame-wrapper">
+      <div class="panel-header-bar">
+        <div class="panel-title" style="color: #10b981;">
+          <span>🛵 3rd Side: Delivery Partner (₹10/km)</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-secondary-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem;" onclick="reloadFrame('frameDelivery')">⟳ Reload</button>
+          <a href="delivery.html" target="_blank" class="btn-secondary-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; text-decoration: none;">↗ Tab</a>
+        </div>
+      </div>
+      <iframe id="frameDelivery" class="panel-frame" src="delivery.html"></iframe>
+    </div>
+
+  </div>
+
+  <script src="js/mockData.js"></script>
+  <script src="js/routeHelper.js"></script>
+  <script src="js/store.js"></script>
+
+  <script>
+    function reloadFrame(frameId) {
+      const frame = document.getElementById(frameId);
+      if (frame) frame.src = frame.src;
+    }
+
+    function resetAllHub() {
+      if (confirm('Reset demo state across all 3 portals?')) {
+        window.tyStore.resetDemoData();
+        reloadFrame('frameClient');
+        reloadFrame('frameRestaurant');
+        reloadFrame('frameDelivery');
+      }
+    }
+
+    function triggerClientOrder() {
+      const order = window.tyStore.createOrder({
+        restaurantId: 'rest-1',
+        restaurantName: 'The Burger Loft & Grills',
+        restaurantAddress: 'Shop 14, High Street Avenue, Downtown',
+        restaurantCoords: { lat: 28.6139, lng: 77.2090 },
+        customer: {
+          name: 'Tanmay Yadav',
+          phone: '+91 99887-76655',
+          address: 'Flat 402, Green Valley Heights, Sector 18',
+          coords: { lat: 28.6280, lng: 77.2280 }
+        },
+        items: [
+          { id: 'item-101', name: 'Smoky BBQ Bacon Cheeseburger', price: 299, quantity: 2 },
+          { id: 'item-102', name: 'Crunchy Truffle French Fries', price: 179, quantity: 1 }
+        ],
+        subtotal: 777,
+        tax: 38,
+        deliveryFee: 40,
+        total: 855,
+        paymentMethod: 'UPI / Online Paid',
+        prepTimeMinutes: 20
+      });
+      alert(`✅ Step 1: Client Order #${order.id} placed! Kitchen will alert immediately.`);
+    }
+
+    function triggerRestaurantAccept() {
+      const orders = window.tyStore.getOrders();
+      if (orders.length === 0) return alert('No orders! Click Step 1 first.');
+      const order = orders[0];
+      window.tyStore.acceptOrderAndSetPrepTime(order.id, 20);
+      alert(`👨‍🍳 Step 2: Kitchen accepted Order #${order.id} and set 20 mins food making timer! Both Client & Kitchen are now ticking.`);
+    }
+
+    function triggerFoodReady() {
+      const orders = window.tyStore.getOrders();
+      if (orders.length === 0) return alert('No orders!');
+      const order = orders[0];
+      window.tyStore.markFoodReady(order.id);
+      alert(`📦 Step 3: Food marked Ready for Pickup! Delivery radar alerted.`);
+    }
+
+    function triggerRiderPickup() {
+      const orders = window.tyStore.getOrders();
+      if (orders.length === 0) return alert('No orders!');
+      const order = orders[0];
+      window.tyStore.assignRiderToOrder(order.id, 'rider-1');
+      window.tyStore.startOrderDelivery(order.id);
+      alert(`🛵 Step 4: Rider Vikram Singh picked up Order #${order.id}! Out for delivery @ ₹10/km.`);
+    }
+
+    function triggerDelivered() {
+      const orders = window.tyStore.getOrders();
+      if (orders.length === 0) return alert('No orders!');
+      const order = orders[0];
+      window.tyStore.completeDelivery(order.id);
+      alert(`🎉 Step 5: Order #${order.id} Delivered to Doorstep! Rider credited at ₹10/km into wallet.`);
+    }
+  </script>
+</body>
+</html>
+

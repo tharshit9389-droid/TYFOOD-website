@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TYFOOD at HOME - Delivery Partner Portal & GPS Tracker</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Leaflet CSS for Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="ty-header">
+    <div class="ty-header-inner">
+      <a href="delivery.html" class="brand-container">
+        <div class="brand-logo-badge" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">🛵</div>
+        <div>
+          <div class="brand-title">TYFOOD <span>Fleet Portal</span></div>
+          <div class="brand-subtitle">Delivery Partner & GPS Live Hub</div>
+        </div>
+      </a>
+
+      <!-- 3-Side Portal Switcher -->
+      <nav class="portal-switcher">
+        <a href="index.html" class="portal-tab">
+          <span>🍽️ Client (Customer)</span>
+        </a>
+        <a href="restaurant.html" class="portal-tab">
+          <span>👨‍🍳 Restaurant Kitchen</span>
+        </a>
+        <a href="delivery.html" class="portal-tab active">
+          <span>🛵 Delivery Partner</span>
+        </a>
+        <a href="split-view.html" class="portal-tab" style="color: #7c3aed; font-weight: 700;">
+          <span>⚡ 3-in-1 Live Hub</span>
+        </a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="user-auth-pill" onclick="deliveryApp.openLoginModal()" style="background: #fff; border: 1.5px solid var(--border); padding: 0.35rem 0.75rem; border-radius: 999px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; box-shadow: var(--shadow-sm);">
+          <span style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Login ID:</span>
+          <b id="riderHeaderLoginId" style="color: #059669; font-size: 0.85rem;">rider.vikram@tyfood.com</b>
+          <span style="font-size: 0.7rem; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 0.15rem 0.45rem; border-radius: 99px; font-weight: 700;">Switch</span>
+        </div>
+        <button id="dutyToggleBtn" class="btn-success">
+          🟢 Duty: ONLINE
+        </button>
+        <button id="deliveryResetDemoBtn" class="btn-secondary-sm" title="Reset all demo data">
+          🔄 Reset Demo
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+
+    <!-- Rider Profile & Verification Bar -->
+    <div style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <img id="riderAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
+          style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--success);" alt="Rider">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 800;" id="riderProfileName">Vikram Singh</h3>
+            <span id="riderVerificationBadge" class="verified-license-badge">
+              ✓ Driving License Verified
+            </span>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.15rem;">
+            <span id="riderProfileVehicle">Honda Activa 6G (DL 04 EF 7890)</span> • 
+            <span id="riderProfileLicense">License: DL-0420220019283</span> • 
+            <span id="riderProfileRating" style="color: #15803d; font-weight: 700;">★ 4.92</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <button class="btn-secondary-sm" onclick="deliveryApp.openPartnerSignupModal()">
+          📝 Register / Switch Partner
+        </button>
+        <button class="btn-secondary-sm" onclick="deliveryApp.viewLicenseDoc()">
+          🪪 View License Card
+        </button>
+      </div>
+    </div>
+
+    <!-- Earning Money Dashboard (Rate: ₹10 / KM) -->
+    <div class="earnings-grid">
+      <div class="earning-card emerald">
+        <div class="earning-title">Wallet Balance (Total Earned)</div>
+        <div class="earning-value" id="walletBalanceVal" style="color: #059669;">₹3,420</div>
+        <div class="earning-sub" style="display: flex; align-items: center; justify-content: space-between;">
+          <span>Available for immediate withdrawal</span>
+          <button class="btn-secondary-sm" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;" onclick="deliveryApp.withdrawMoney()">Payout →</button>
+        </div>
+      </div>
+
+      <div class="earning-card gold">
+        <div class="earning-title">Earning Rate Formula</div>
+        <div class="earning-value" style="color: #b45309; font-size: 1.7rem;">₹10 / KM</div>
+        <div class="earning-sub">You earn strictly ₹10 per kilometer traveled</div>
+      </div>
+
+      <div class="earning-card blue">
+        <div class="earning-title">Total Kilometers Covered</div>
+        <div class="earning-value" id="walletKmVal" style="color: #2563eb;">342 km</div>
+        <div class="earning-sub">Distance tracked accurately via GPS</div>
+      </div>
+
+      <div class="earning-card">
+        <div class="earning-title">Completed Food Deliveries</div>
+        <div class="earning-value" id="walletTripsVal" style="color: var(--primary);">142 Trips</div>
+        <div class="earning-sub">100% on-time delivery record</div>
+      </div>
+    </div>
+
+    <!-- Active Delivery or Available Orders Radar -->
+    <section id="deliveryOrdersContainer">
+      <!-- Rendered dynamically via js/delivery.js -->
+    </section>
+
+  </main>
+
+  <!-- Partner Registration & Driving License Verification Modal -->
+  <div class="modal-overlay" id="partnerSignupModal">
+    <div class="modal-container" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>🛵 Partner Sign-Up & Driving License Verification</h3>
+        <button class="modal-close-btn" onclick="deliveryApp.closePartnerSignupModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Join the <b>TYFOOD at HOME</b> fleet! Delivery partners earn <b>₹10 per kilometer</b> with transparent payouts and live GPS routing.
+        </p>
+
+        <form id="partnerSignupForm" onsubmit="deliveryApp.handlePartnerSignup(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" id="regName" class="form-input" placeholder="e.g. Rahul Sharma" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Mobile Number *</label>
+              <input type="tel" id="regPhone" class="form-input" placeholder="+91 98765-43210" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Vehicle Type *</label>
+              <select id="regVehicle" class="form-select">
+                <option value="Honda Activa 6G">Scooter (Honda Activa / Access)</option>
+                <option value="Hero Splendor Plus">Motorcycle (Splendor / Pulsar)</option>
+                <option value="Ather 450X EV">Electric Vehicle (Ather / Ola / Chetak)</option>
+                <option value="Gear Bicycle">Bicycle (Urban Deliveries)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Vehicle Registration Number *</label>
+              <input type="text" id="regVehicleNumber" class="form-input" placeholder="e.g. DL 04 EF 7890" required>
+            </div>
+          </div>
+
+          <!-- Mandatory Driving License Check -->
+          <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+              <span style="font-size: 0.9rem; font-weight: 800; color: #0f172a;">
+                🪪 Government Driving License Verification Check
+              </span>
+              <span class="rate-pill">Mandatory Check</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Driving License Number * (15 digits e.g. DL-0420240012345)</label>
+              <input type="text" id="regLicenseNumber" class="form-input" placeholder="DL-0420240012345" required minlength="8" 
+                oninput="deliveryApp.validateLicenseFormat(this.value)">
+              <div id="licenseFormatFeedback" style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-muted);">
+                Must be an active regional transport authority driving license.
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Upload Driving License Document / Photo *</label>
+              <div class="license-dropzone" onclick="document.getElementById('licenseFileInput').click()">
+                <div style="font-size: 1.8rem; margin-bottom: 0.35rem;">📷</div>
+                <div style="font-size: 0.85rem; font-weight: 700;">Click to upload Driving License front photo</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">JPG, PNG or PDF format accepted</div>
+                <input type="file" id="licenseFileInput" accept="image/*" style="display: none;" onchange="deliveryApp.handleLicenseFile(event)">
+              </div>
+
+              <!-- Preview of uploaded license -->
+              <div class="license-preview-box" id="licensePreviewBox" style="display: block;">
+                <img id="licensePreviewImg" src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=600&q=80" alt="License Document">
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="btn-outline" onclick="deliveryApp.closePartnerSignupModal()">Cancel</button>
+            <button type="submit" class="btn-primary">
+              ✅ Verify License & Activate Partner Account
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- License Viewer Modal -->
+  <div class="modal-overlay" id="viewLicenseModal">
+    <div class="modal-container" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>🪪 Verified Driving License</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('viewLicenseModal').classList.remove('open')">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <img id="viewLicenseImg" src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=600&q=80" 
+          style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);" alt="License">
+        <div style="margin-top: 1rem; text-align: left; background: #f8fafc; padding: 1rem; border-radius: 8px; font-size: 0.85rem;">
+          <div><b>Holder:</b> <span id="viewHolderName">Vikram Singh</span></div>
+          <div><b>License No:</b> <span id="viewHolderNumber">DL-0420220019283</span></div>
+          <div><b>Verification Status:</b> <span style="color: #059669; font-weight: 800;">✓ VALID & ACTIVE</span></div>
+          <div><b>Earnings Rate:</b> <span style="color: #b45309; font-weight: 800;">₹10 per Kilometer</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery Partner Login ID Modal -->
+  <div class="modal-overlay" id="riderLoginModal">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3>🛵 Delivery Partner Login</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('riderLoginModal').classList.remove('open')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Enter your Rider Login ID or select a pre-verified delivery partner account below.
+        </p>
+
+        <!-- Quick 1-Click Demo Login IDs -->
+        <div style="margin-bottom: 1.25rem;">
+          <label class="form-label" style="font-size: 0.78rem; text-transform: uppercase;">
+            ⚡ Quick 1-Click Demo Partner Login IDs:
+          </label>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <button type="button" class="btn-outline" style="justify-content: space-between; font-size: 0.82rem; padding: 0.6rem 0.85rem;" 
+              onclick="deliveryApp.quickLogin('rider.vikram@tyfood.com')">
+              <span>🛵 <b>rider.vikram@tyfood.com</b> (Vikram Singh - Activa)</span>
+              <span style="color: #059669; font-weight: 800;">Login →</span>
+            </button>
+            <button type="button" class="btn-outline" style="justify-content: space-between; font-size: 0.82rem; padding: 0.6rem 0.85rem;" 
+              onclick="deliveryApp.quickLogin('rider.aman@tyfood.com')">
+              <span>⚡ <b>rider.aman@tyfood.com</b> (Aman Sharma - Ather EV)</span>
+              <span style="color: #059669; font-weight: 800;">Login →</span>
+            </button>
+          </div>
+        </div>
+
+        <form id="riderLoginForm" onsubmit="deliveryApp.handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Or Enter Custom Partner Login ID / Phone</label>
+            <input type="text" id="customRiderLoginId" class="form-input" placeholder="e.g. rider.rahul@tyfood.com or +91 98765-43210" required>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem;">
+            <a href="javascript:void(0)" onclick="document.getElementById('riderLoginModal').classList.remove('open'); deliveryApp.openPartnerSignupModal();" 
+              style="font-size: 0.82rem; color: var(--primary); font-weight: 700; text-decoration: none;">
+              + Sign Up New Delivery Partner
+            </a>
+            <button type="submit" class="btn-primary" style="background: #059669;">
+              🔑 Log In to Fleet
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="js/mockData.js"></script>
+  <script src="js/routeHelper.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/delivery.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TYFOOD at HOME - Restaurant & Kitchen Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="ty-header">
+    <div class="ty-header-inner">
+      <a href="index.html" class="brand-container">
+        <div class="brand-logo-badge" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);">👨‍🍳</div>
+        <div>
+          <div class="brand-title">TYFOOD <span>Kitchen Portal</span></div>
+          <div class="brand-subtitle">Restaurant Orders, Menu & Earnings</div>
+        </div>
+      </a>
+
+      <!-- 3-Side Portal Switcher -->
+      <nav class="portal-switcher">
+        <a href="index.html" class="portal-tab">
+          <span>🍽️ Client (Customer)</span>
+        </a>
+        <a href="restaurant.html" class="portal-tab active">
+          <span>👨‍🍳 Restaurant Kitchen</span>
+        </a>
+        <a href="delivery.html" class="portal-tab">
+          <span>🛵 Delivery Partner</span>
+        </a>
+        <a href="split-view.html" class="portal-tab" style="color: #7c3aed; font-weight: 700;">
+          <span>⚡ 3-in-1 Live Hub</span>
+        </a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="user-auth-pill" onclick="restApp.openLoginModal()" style="background: #fff; border: 1.5px solid var(--border); padding: 0.35rem 0.75rem; border-radius: 999px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; box-shadow: var(--shadow-sm);">
+          <span style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Login ID:</span>
+          <b id="restHeaderLoginId" style="color: #ea580c; font-size: 0.85rem;">chef.burgerloft@tyfood.com</b>
+          <span style="font-size: 0.7rem; background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; padding: 0.15rem 0.45rem; border-radius: 99px; font-weight: 700;">Switch</span>
+        </div>
+        <button id="restResetDemoBtn" class="btn-secondary-sm" title="Reset all demo data">
+          🔄 Reset Demo
+        </button>
+        <span class="live-pulse-badge">
+          <span class="pulse-dot"></span> Kitchen Active
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+
+    <!-- Restaurant Header Bar & Selector -->
+    <div style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem; box-shadow: var(--shadow-sm);">
+      <div style="display: flex; align-items: center; gap: 1.25rem;">
+        <img id="restProfileLogo" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=200&q=80" 
+          style="width: 72px; height: 72px; border-radius: 14px; object-fit: cover; box-shadow: var(--shadow-md); border: 2px solid #fed7aa;" alt="Restaurant Logo">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+            <h2 id="restProfileTitle" style="font-size: 1.45rem; font-weight: 800; margin: 0;">The Burger Loft & Grills</h2>
+            <span id="restFssaiBadge" class="verified-license-badge">
+              ✓ FSSAI Food Safety Verified
+            </span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;" id="restProfileMeta">
+            <span id="restProfileCuisine">American • Burgers • Shakes</span> • 
+            <span id="restProfileOwner">Owner: Chef Robert Vance</span> • 
+            <span id="restProfileFssai">License: FSSAI-10022011002345</span>
+          </div>
+          <div style="font-size: 0.8rem; color: #b45309; font-weight: 700; margin-top: 0.2rem;" id="restProfilePayout">
+            🏦 Payout Account: merchant@upi • ⏱️ Avg Prep: 18 mins
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+        <div>
+          <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 0.2rem;">
+            Switch Kitchen
+          </label>
+          <select id="restaurantSelectDropdown" style="font-size: 0.95rem; font-weight: 800; border: 1.5px solid var(--border); border-radius: 8px; padding: 0.45rem 0.85rem; background: #f8fafc; cursor: pointer;">
+            <!-- Rendered dynamically -->
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+          <button class="btn-primary" onclick="restApp.openRestaurantSignupModal()" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+            🏪 + Register New Restaurant
+          </button>
+          <button class="btn-primary" onclick="restApp.openAddDishModal()">
+            📸 + Add Dish (HD Photos)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Restaurant Earnings & Financial Cards -->
+    <div class="earnings-grid">
+      <div class="earning-card emerald">
+        <div class="earning-title">Net Kitchen Earnings</div>
+        <div class="earning-value" id="statNetEarnings" style="color: #059669;">₹0</div>
+        <div class="earning-sub">Your 90% payout after platform fee</div>
+      </div>
+
+      <div class="earning-card gold">
+        <div class="earning-title">Total Gross Sales</div>
+        <div class="earning-value" id="statGrossSales">₹0</div>
+        <div class="earning-sub" id="statOrdersCount">0 orders processed</div>
+      </div>
+
+      <div class="earning-card blue">
+        <div class="earning-title">Platform Fee (10%)</div>
+        <div class="earning-value" id="statPlatformFee" style="color: #2563eb;">₹0</div>
+        <div class="earning-sub">Includes payment & server costs</div>
+      </div>
+
+      <div class="earning-card">
+        <div class="earning-title">Active Orders in Kitchen</div>
+        <div class="earning-value" id="statActiveCount" style="color: #ea580c;">0</div>
+        <div class="earning-sub">Orders pending or cooking</div>
+      </div>
+    </div>
+
+    <!-- Kitchen Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; border-bottom: 2px solid var(--border); margin-bottom: 1.75rem;">
+      <button class="cat-chip active" id="tabOrdersBtn" onclick="restApp.switchTab('orders')">
+        🔔 Orders Line & Cooking Timer
+      </button>
+      <button class="cat-chip" id="tabMenuBtn" onclick="restApp.switchTab('menu')">
+        📖 Menu & Stock Manager
+      </button>
+      <button class="cat-chip" id="tabFinanceBtn" onclick="restApp.switchTab('finance')">
+        💰 Financial Ledger & Payouts
+      </button>
+    </div>
+
+    <!-- TAB 1: Live Orders Queue -->
+    <section id="sectionOrdersTab" style="margin-bottom: 3rem;">
+      <div class="section-head">
+        <div>
+          <h2>Kitchen Order Line & Prep Management</h2>
+          <p>Accept incoming orders, assign food making times, and alert riders when food is ready</p>
+        </div>
+      </div>
+
+      <div class="orders-feed-container" id="restaurantOrdersFeed">
+        <!-- Rendered via js/restaurant.js -->
+      </div>
+    </section>
+
+    <!-- TAB 2: Menu Item Availability Management -->
+    <section id="sectionMenuTab" style="display: none; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.75rem; margin-bottom: 3rem;">
+      <div class="section-head">
+        <div>
+          <h3>Restaurant Dishes & Menu Catalog</h3>
+          <p>Manage high-resolution dish pictures, prices, and stock availability</p>
+        </div>
+        <button class="btn-primary" onclick="restApp.openAddDishModal()">
+          📸 + Add New High-Res Dish
+        </button>
+      </div>
+      <div id="restaurantMenuList">
+        <!-- Rendered via js/restaurant.js -->
+      </div>
+    </section>
+
+    <!-- TAB 3: Financial Ledger & Detailed Payouts -->
+    <section id="sectionFinanceTab" style="display: none; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.75rem; margin-bottom: 3rem;">
+      <div class="section-head">
+        <div>
+          <h3>Restaurant Earnings & Order Breakdown</h3>
+          <p>Transparent ledger showing gross item sales, platform commission, and net kitchen profit</p>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="finance-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Placed Date & Time</th>
+              <th>Items Summary</th>
+              <th>Status</th>
+              <th>Gross Amount</th>
+              <th>Platform Fee (10%)</th>
+              <th>Net Kitchen Payout</th>
+            </tr>
+          </thead>
+          <tbody id="financeTableBody">
+            <!-- Rendered via js/restaurant.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Add New Dish Modal with High-Res Image Quality -->
+  <div class="modal-overlay" id="addDishModal">
+    <div class="modal-container" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3>📸 Add New Dish with High Quality Photo</h3>
+        <button class="modal-close-btn" onclick="restApp.closeAddDishModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addDishForm" onsubmit="restApp.handleSaveDish(event)">
+          <div class="form-group">
+            <label class="form-label">Dish Name *</label>
+            <input type="text" id="newDishName" class="form-input" placeholder="e.g. Sizzling Truffle Butter Steak" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="newDishCategory" class="form-select">
+                <option value="Burgers">Burgers & Sandwiches</option>
+                <option value="Pizza">Artisan Pizza</option>
+                <option value="Biryani">Dum Biryani & Rice</option>
+                <option value="Mains">Curries & Mains</option>
+                <option value="Sides">Starters & Sides</option>
+                <option value="Desserts">Desserts & Sweets</option>
+                <option value="Beverages">Drinks & Shakes</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Price (₹) *</label>
+              <input type="number" id="newDishPrice" class="form-input" min="10" placeholder="e.g. 349" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Dietary Type *</label>
+              <select id="newDishVeg" class="form-select">
+                <option value="false">🔴 Non-Vegetarian</option>
+                <option value="true">🟢 Pure Vegetarian</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Food Making Time (Minutes) *</label>
+              <input type="number" id="newDishPrepTime" class="form-input" min="2" max="90" value="15" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description / Ingredients</label>
+            <textarea id="newDishDesc" class="form-textarea" rows="2" placeholder="Describe the flavors, fresh ingredients, and spices used..."></textarea>
+          </div>
+
+          <!-- High Picture Quality Photo Selector -->
+          <div class="form-group">
+            <label class="form-label">
+              🌟 High-Definition Food Photography (Choose a 4K Food Preset or Paste High-Res URL):
+            </label>
+            <div class="photo-preset-grid" id="photoPresetsGrid">
+              <!-- Rendered via JS presets -->
+            </div>
+
+            <div style="margin-top: 0.5rem;">
+              <input type="url" id="newDishCustomUrl" class="form-input" placeholder="Or enter custom high-res image URL (https://...)" onchange="restApp.handleCustomUrlChange(this.value)">
+            </div>
+
+            <!-- Preview Card -->
+            <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 1rem; background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <img id="dishPhotoPreview" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80" 
+                style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; box-shadow: var(--shadow-sm);" alt="Preview">
+              <div style="font-size: 0.82rem; color: var(--text-muted);">
+                <b>Selected HD Photo Preview</b><br>
+                High resolution ensures appetizing visual appeal on client mobile & desktop devices.
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+            <button type="button" class="btn-outline" onclick="restApp.closeAddDishModal()">Cancel</button>
+            <button type="submit" class="btn-primary">✨ Add Dish to Menu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restaurant Onboarding & Sign-Up Modal -->
+  <div class="modal-overlay" id="restaurantSignupModal">
+    <div class="modal-container" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3>🏪 Register Your Restaurant on "TYFOOD at HOME"</h3>
+        <button class="modal-close-btn" onclick="restApp.closeRestaurantSignupModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Join the city's premier dining platform. Receive live client orders, manage food making timers, earn <b>90% net payouts</b>, and dispatch with our verified ₹10/km delivery fleet!
+        </p>
+
+        <form id="restaurantSignupForm" onsubmit="restApp.handleRestaurantSignup(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Restaurant Brand Name *</label>
+              <input type="text" id="regRestName" class="form-input" placeholder="e.g. Spice Route Claypot Kitchen" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Owner / Head Chef Full Name *</label>
+              <input type="text" id="regRestOwner" class="form-input" placeholder="e.g. Chef Sanjeev Malhotra" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Contact Mobile Number *</label>
+              <input type="tel" id="regRestPhone" class="form-input" placeholder="+91 98765-11223" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Business Email</label>
+              <input type="email" id="regRestEmail" class="form-input" placeholder="kitchen@spiceroute.com">
+            </div>
+          </div>
+
+          <!-- FSSAI Food License Verification -->
+          <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.88rem; font-weight: 800; color: #0f172a;">
+                🪪 FSSAI Food Safety License Verification Check
+              </span>
+              <span class="rate-pill">Govt Safety Mandate</span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0.35rem;">
+              <label class="form-label">14-Digit FSSAI License Number *</label>
+              <input type="text" id="regRestFssai" class="form-input" placeholder="FSSAI-10024011005678" required minlength="8"
+                oninput="restApp.validateFssaiFormat(this.value)">
+              <div id="fssaiFormatFeedback" style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-muted);">
+                Must be an active food safety authority registration number.
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Kitchen Street Address & Area *</label>
+              <input type="text" id="regRestAddress" class="form-input" placeholder="Shop 12, Ground Floor, Royal Plaza, Sector 15" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Avg Prep Time (Mins) *</label>
+              <input type="number" id="regRestPrepTime" class="form-input" min="5" max="90" value="20" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Cuisine Specialties *</label>
+              <select id="regRestCuisine" class="form-select">
+                <option value="North Indian • Mughlai • Biryani">North Indian • Mughlai • Biryani</option>
+                <option value="American • Gourmet Burgers • Shakes">American • Gourmet Burgers • Shakes</option>
+                <option value="Italian • Artisan Pizza • Pasta">Italian • Artisan Pizza • Pasta</option>
+                <option value="Pan-Asian • Dimsums • Noodles">Pan-Asian • Dimsums • Noodles</option>
+                <option value="South Indian • Dosa • Filter Coffee">South Indian • Dosa • Filter Coffee</option>
+                <option value="Bakery • Artisanal Desserts • Cakes">Bakery • Artisanal Desserts • Cakes</option>
+                <option value="Healthy • Salads • Protein Bowls">Healthy • Salads • Protein Bowls</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Dietary Preference *</label>
+              <select id="regRestVeg" class="form-select">
+                <option value="false">🔴 Multi-Cuisine (Veg & Non-Veg)</option>
+                <option value="true">🟢 100% Pure Vegetarian Kitchen</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- High-Res Restaurant Cover Presets -->
+          <div class="form-group">
+            <label class="form-label">
+              🌟 Restaurant Cover & Ambiance Photo (Choose a 4K Atmosphere Preset or Paste URL):
+            </label>
+            <div class="photo-preset-grid" id="restCoverPresetsGrid">
+              <!-- Rendered via JS -->
+            </div>
+            <input type="url" id="regRestCustomCover" class="form-input" placeholder="Or enter custom high-res cover photo URL (https://...)" onchange="restApp.handleRestCoverChange(this.value)">
+
+            <!-- Cover Preview -->
+            <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 1rem; background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+              <img id="restCoverPreview" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80" 
+                style="width: 100px; height: 65px; border-radius: 8px; object-fit: cover; box-shadow: var(--shadow-sm);" alt="Cover Preview">
+              <div style="font-size: 0.8rem; color: var(--text-muted);">
+                <b>Selected Restaurant Atmosphere Cover Preview</b><br>
+                Displayed at the top of your restaurant listing on the client portal.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payout UPI ID / Bank Account (For 90% Daily Net Payouts) *</label>
+            <input type="text" id="regRestPayout" class="form-input" placeholder="e.g. yourbusiness@upi or 1234567890@icici" required>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+            <button type="button" class="btn-outline" onclick="restApp.closeRestaurantSignupModal()">Cancel</button>
+            <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+              ✨ Complete Registration & Add Dishes ➔
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restaurant Login ID Modal -->
+  <div class="modal-overlay" id="restaurantLoginModal">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3>👨‍🍳 Restaurant Kitchen Login</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('restaurantLoginModal').classList.remove('open')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Enter your restaurant Login ID or select a pre-registered merchant account below.
+        </p>
+
+        <!-- Quick 1-Click Demo Login IDs -->
+        <div style="margin-bottom: 1.25rem;">
+          <label class="form-label" style="font-size: 0.78rem; text-transform: uppercase;">
+            ⚡ Quick 1-Click Demo Login IDs:
+          </label>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <button type="button" class="btn-outline" style="justify-content: space-between; font-size: 0.82rem; padding: 0.6rem 0.85rem;" 
+              onclick="restApp.quickLogin('chef.burgerloft@tyfood.com')">
+              <span>🍔 <b>chef.burgerloft@tyfood.com</b> (The Burger Loft)</span>
+              <span style="color: var(--primary); font-weight: 800;">Login →</span>
+            </button>
+            <button type="button" class="btn-outline" style="justify-content: space-between; font-size: 0.82rem; padding: 0.6rem 0.85rem;" 
+              onclick="restApp.quickLogin('chef.bellaitalia@tyfood.com')">
+              <span>🍕 <b>chef.bellaitalia@tyfood.com</b> (Bella Italia Pizzeria)</span>
+              <span style="color: var(--primary); font-weight: 800;">Login →</span>
+            </button>
+            <button type="button" class="btn-outline" style="justify-content: space-between; font-size: 0.82rem; padding: 0.6rem 0.85rem;" 
+              onclick="restApp.quickLogin('chef.royalbiryani@tyfood.com')">
+              <span>🍛 <b>chef.royalbiryani@tyfood.com</b> (Royal Biryani)</span>
+              <span style="color: var(--primary); font-weight: 800;">Login →</span>
+            </button>
+          </div>
+        </div>
+
+        <form id="restaurantLoginForm" onsubmit="restApp.handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Or Enter Custom Restaurant Login ID / Email</label>
+            <input type="text" id="customRestLoginId" class="form-input" placeholder="e.g. chef.spiceroute@tyfood.com" required>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem;">
+            <a href="javascript:void(0)" onclick="document.getElementById('restaurantLoginModal').classList.remove('open'); restApp.openRestaurantSignupModal();" 
+              style="font-size: 0.82rem; color: var(--primary); font-weight: 700; text-decoration: none;">
+              + Register New Restaurant
+            </a>
+            <button type="submit" class="btn-primary">
+              🔑 Log In to Kitchen
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/mockData.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/restaurant.js"></script>
+</body>
+</html>
